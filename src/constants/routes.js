@@ -7,5 +7,5 @@ export const PROFILE = "/profile";
 export const SETTINGS = "/settings";
 export const PAGE_NOT_FOUND_404 = "/404-page-not-found";
 
-//export const API_BASE_URL = "https://fitflex.site";
-export const API_BASE_URL = "http://localhost:3000";
+export const API_BASE_URL = "https://reeco.netlify.app";
+// export const API_BASE_URL = "http://localhost:3000";
