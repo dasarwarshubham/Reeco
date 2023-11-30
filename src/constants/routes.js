@@ -7,5 +7,5 @@ export const PROFILE = "/profile";
 export const SETTINGS = "/settings";
 export const PAGE_NOT_FOUND_404 = "/404-page-not-found";
 
-export const API_BASE_URL = "https://reeco_sd.netlify.app";
+export const API_BASE_URL = "https://reeco-sd.netlify.app";
 // export const API_BASE_URL = "http://localhost:3000";
