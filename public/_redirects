@@ -1,1 +1,3 @@
 /* /index.html 200
+/fixtures/orders.json /fixtures/orders.json 200
+/fixtures/orderDetails.json /fixtures/orderDetails.json 200
