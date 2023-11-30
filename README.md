@@ -1,1 +1,1 @@
-# Reeco
+# This is a demo project
