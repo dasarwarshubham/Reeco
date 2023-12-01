@@ -29,7 +29,11 @@ $zindex-sticky: 1046;
 // model
 $modal-content-bg: $white;
 $modal-content-border-radius: 1.5rem;
-body.modal-open > :not(.modal) {
+
+.modal-open .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1 !important;
+  backdrop-filter: blur(3px);
   -webkit-filter: blur(3px);
   -moz-filter: blur(3px);
   -o-filter: blur(3px);
