@@ -17,11 +17,28 @@ const orderListSlice = createSlice({
     error: null,
   },
   reducers: {
-    updateOrderItemStatus: (state, action) => {
-      const { id, status } = action.payload;
-      const orderItem = state.orderDetails?.order_items.find((item) => item.id === id);
-      if (orderItem) {
-        orderItem.status = status;
+    addItem: (state, action) => {
+      const item = action.payload;
+      const existingItem = state.orderDetails?.order_items.find(
+        (orderItem) => orderItem?.id === item.id
+      );
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        state.orderDetails.order_items.push({
+          ...item,
+          quantity: 1,
+          total: item.price * 1,
+          status: null,
+          comment: null
+        });
+      }
+    },
+    updateItem: (state, action) => {
+      const updatedOrderItem = action.payload;
+      const orderItemIndex = state.orderDetails?.order_items.findIndex((item) => item.id === updatedOrderItem.id);
+      if (orderItemIndex !== -1) {
+        state.orderDetails.order_items[orderItemIndex] = { ...updatedOrderItem };
       }
     },
   },
@@ -59,5 +76,5 @@ const orderListSlice = createSlice({
   },
 });
 
-export const { updateOrderItemStatus } = orderListSlice.actions;
+export const { addItem, updateItem } = orderListSlice.actions;
 export default orderListSlice.reducer;

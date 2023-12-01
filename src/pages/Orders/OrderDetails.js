@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import styled from "styled-components";
 
 import { Link } from "react-router-dom";
 import { ORDERS } from "../../constants/routes";
@@ -10,18 +9,19 @@ import {
   Breadcrumb,
   Col,
   Container,
-  Form,
-  InputGroup,
-  Modal,
   Row
 } from "react-bootstrap";
 
-import { ReactComponent as SearchIcon } from "../../assets/search-icon.svg";
 import { ReactComponent as PrintIcon } from "../../assets/print-icon.svg";
 
+import OrderInfo from "../../containers/OrderInfo";
 import Loader from "../../components/Loader";
 import OrderItem from "../../components/OrderItem";
-import OrderInfo from "../../containers/OrderInfo";
+import OrderCancelModal from "../../components/OrderModal/OrderCancelModal";
+import OrderAddModal from "../../components/OrderModal/OrderAddModal";
+import OrderEditModal from "../../components/OrderModal/OrderEditModal";
+import SearchForm from "../../components/SearchForm";
+import OrderItemsTable from "../../components/OrderItemsTable";
 
 // import required redux selectors
 import {
@@ -32,37 +32,9 @@ import {
 
 // import required redux actions
 import { getOrderById } from "../../redux/orders/orderActions";
-import { updateOrderItemStatus } from "../../redux/orders/orderSlice";
+import { updateItem } from "../../redux/orders/orderSlice";
 
-const Wrapper = styled.div`
-  max-height: 400px;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 0px;
-  }
-`;
-
-const SearchForm = () => {
-  return (
-    <Form className="d-flex">
-      <InputGroup className="border border-3 rounded-pill">
-        <Form.Control
-          id="search"
-          name="search"
-          placeholder="Search..."
-          aria-label="Search"
-          aria-describedby="search"
-          className="border-0 rounded-pill"
-        />
-        <Button variant="transparent" className="px-4 rounded-pill">
-          <SearchIcon style={{ fill: "#adb5bd"}} />
-        </Button>
-      </InputGroup>
-    </Form>
-  )
-}
+import status from "../../constants/status";
 
 const OrderDetails = () => {
   const { orderId } = useParams();
@@ -73,25 +45,28 @@ const OrderDetails = () => {
   const orderDetails = useSelector(selectOrderById);
   const error = useSelector(selectError);
 
+  const [showAdd, setShowAdd] = useState(false);
+  const [showCancel, setShowCancel] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  const showCancelModal = (item) => {
+    setSelectedRow(item);
+    setShowCancel(true);
+  };
+  const showEditModal = (item) => {
+    setSelectedRow(item);
+    setShowEdit(true);
+  };
+
+  const handleApprove = (item) => {
+    dispatch(updateItem({ ...item, status: status.APPROVED.key }));
+  }
+
   useEffect(() => {
     dispatch(getOrderById(orderId));
     // eslint-disable-next-line
   }, [orderId]);
-
-  const [show, setShow] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null);
-
-  const handleApprove = (itemId) => {
-    dispatch(updateOrderItemStatus({ status: "Approved", id: itemId }));
-  }
-  const handleClose = (newStatus) => {
-    dispatch(updateOrderItemStatus({ status: newStatus, id: selectedRow?.id }))
-    setShow(false);
-  }
-  const handleShow = (item) => {
-    setSelectedRow(item);
-    setShow(true);
-  };
 
   if (loading) {
     return <Loader />;
@@ -101,7 +76,7 @@ const OrderDetails = () => {
     return (
       <div
         className="d-flex justify-content-center align-items-center"
-        style={{ height: "75vh" }}
+        style={{ height: "88vh" }}
       >
         <h4>{error}</h4>
       </div>
@@ -147,58 +122,65 @@ const OrderDetails = () => {
       <Container>
         <Container className="my-5 bg-white border border-2 rounded-4">
           <Row className="my-5 mx-3 mx-md-5 g-4">
-            <Col xs={12} md={6} lg={4} className="px-0">
+            <Col xs={12} md={6} lg={5} className="px-0">
               <SearchForm />
             </Col>
-            <Col xs={12} md={6} lg={8} className="d-flex justify-content-between justify-content-md-end">
-              <Button variant="outline-primary" className="fw-bold border-2 rounded-pill px-5 me-5">
+            <Col xs={12} md={6} lg={7} className="d-flex justify-content-between justify-content-md-end">
+              <Button
+                variant="outline-primary"
+                className="fw-bold border-2 rounded-pill px-5 me-5"
+                onClick={() => setShowAdd(true)}
+              >
                 Add item
               </Button>
-              <Button variant="transparent">
+              <Button variant="transparent" aria-label="print">
                 <PrintIcon />
               </Button>
             </Col>
           </Row>
-          <Row className="d-none d-md-flex border border-3 rounded-bottom-0 rounded-4 mt-5 mx-3 mx-md-5">
-            <Col xs={12} md={1} lg={1}></Col>
-            <Col xs={12} md={2} lg={3} className="py-3"><span className="text-muted">Product Name</span></Col>
-            <Col xs={12} md={1} lg={1} className="py-3"><span className="text-muted">Brand</span></Col>
-            <Col xs={12} md={2} lg={2} className="py-3"><span className="text-muted">Price</span></Col>
-            <Col xs={12} md={1} lg={1} className="py-3"><span className="text-muted">Quantity</span></Col>
-            <Col xs={12} md={2} lg={1} className="py-3"><span className="text-muted">Total</span></Col>
-            <Col xs={12} md={3} lg={3} className="py-3"><span className="text-muted">Status</span></Col>
-          </Row>
-          <Wrapper className="table-scroll-div mx-3 mx-md-5 mb-5">
-            {orderDetails?.order_items?.map((item, index) => (
-              <OrderItem
-                item={item}
-                key={index}
-                handleShow={() => handleShow(item)}
-                handleApprove={handleApprove}
-              />
-            ))}
-          </Wrapper>
+          <div className="mx-3 mx-md-5 mb-5">
+            <OrderItemsTable responsive>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th className="py-3 text-muted">Product Name</th>
+                  <th className="py-3 text-muted">Brand</th>
+                  <th className="py-3 text-muted">Price</th>
+                  <th className="py-3 text-muted">Quantity</th>
+                  <th className="py-3 text-muted">Total</th>
+                  <th className="py-3 text-muted">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderDetails?.order_items?.map((item, index) => (
+                  <OrderItem
+                    item={item}
+                    key={index}
+                    handleApprove={() => handleApprove(item)}
+                    handleCancel={() => showCancelModal(item)}
+                    handleEdit={() => showEditModal(item)}
+                  />
+                ))}
+              </tbody>
+            </OrderItemsTable>
+          </div>
         </Container>
       </Container>
-      <Modal
-        centered
-        show={show}
-        onHide={() => setShow(false)}
-        contentClassName="px-3 py-4"
-      >
-        <Modal.Header className="border-0" closeButton closeVariant="white">
-          <Modal.Title>Missing Product</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>is, "<div className="text-truncate">{selectedRow?.title}</div>" urgent?</Modal.Body>
-        <Modal.Footer className="border-0">
-          <Button variant="transparent" onClick={() => handleClose("Missing")} className="fw-bold me-4">
-            No
-          </Button>
-          <Button variant="transparent" onClick={() => handleClose("Missing - Urgent")} className="fw-bold">
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <OrderAddModal
+        show={showAdd}
+        setShow={setShowAdd}
+        order_items={orderDetails?.order_items}
+      />
+      <OrderCancelModal
+        item={selectedRow}
+        show={showCancel}
+        setShow={setShowCancel}
+      />
+      <OrderEditModal
+        item={selectedRow}
+        show={showEdit}
+        setShow={setShowEdit}
+      />
     </>
   );
 };

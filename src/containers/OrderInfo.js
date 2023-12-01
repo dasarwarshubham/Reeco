@@ -22,7 +22,7 @@ const OrderInfo = ({ orderDetails }) => {
             </OrderDetails.Item>
             <OrderDetails.Item>
                 <OrderDetails.Title>Total</OrderDetails.Title>
-                <OrderDetails.Content>{orderDetails?.order_total}</OrderDetails.Content>
+                <OrderDetails.Content>{orderDetails?.currency}{orderDetails?.order_total}</OrderDetails.Content>
             </OrderDetails.Item>
             <OrderDetails.Item>
                 <OrderDetails.Title className="mb-2 fw-bold text-muted">Category</OrderDetails.Title>

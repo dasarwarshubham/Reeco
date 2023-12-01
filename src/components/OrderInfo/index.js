@@ -11,7 +11,7 @@ OrderDetails.Item = ({ children, ...restProps }) => {
 };
 
 OrderDetails.Title = ({ children, ...restProps }) => {
-    return <span className="fw-bold text-muted mb-2" {...restProps}>{children}</span>;
+    return <p className="fw-bold text-muted mb-2" {...restProps}>{children}</p>;
 };
 
 OrderDetails.Content = ({ children, ...restProps }) => {

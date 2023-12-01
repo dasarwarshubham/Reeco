@@ -12,7 +12,8 @@ import { Col, Row, Card, Badge } from "react-bootstrap";
 import { retrieveOrders } from "../../redux/orders/orderActions";
 
 // import required redux selectors
-import { selectAllOrders, selectError } from "../../redux/orders/orderSelectors";
+import { selectLoadingStatus, selectAllOrders, selectError } from "../../redux/orders/orderSelectors";
+import Loader from "../../components/Loader";
 
 const OrderCard = styled(Card)`
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
@@ -30,10 +31,10 @@ const OrderCard = styled(Card)`
   }
 `;
 
-
 const Orders = () => {
   const dispatch = useDispatch();
   const orders = useSelector(selectAllOrders);
+  const loading = useSelector(selectLoadingStatus);
   const error = useSelector(selectError);
   
   useEffect(() => {
@@ -41,11 +42,15 @@ const Orders = () => {
     // eslint-disable-next-line
   }, []);
 
+  if (loading) {
+    return <Loader />
+  }
+
   if (error) {
     return (
       <div
         className="d-flex justify-content-center align-items-center"
-        style={{ height: "75vh" }}
+        style={{ height: "88vh" }}
       >
         <h4>{error}</h4>
       </div>

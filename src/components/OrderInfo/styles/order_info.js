@@ -42,6 +42,7 @@ export const Content = styled.div`
 `;
 
 export const CategoryGrid = styled.div`
+    margin-top: 1rem;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr;
