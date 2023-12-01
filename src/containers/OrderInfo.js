@@ -22,7 +22,7 @@ const OrderInfo = ({ orderDetails }) => {
             </OrderDetails.Item>
             <OrderDetails.Item>
                 <OrderDetails.Title>Total</OrderDetails.Title>
-                <OrderDetails.Content>{orderDetails?.currency}{orderDetails?.order_total}</OrderDetails.Content>
+                <OrderDetails.Content>{orderDetails?.currency}{parseFloat(orderDetails?.order_total).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</OrderDetails.Content>
             </OrderDetails.Item>
             <OrderDetails.Item>
                 <OrderDetails.Title className="mb-2 fw-bold text-muted">Category</OrderDetails.Title>
