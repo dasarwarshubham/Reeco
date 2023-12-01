@@ -29,6 +29,13 @@ $zindex-sticky: 1046;
 // model
 $modal-content-bg: $white;
 $modal-content-border-radius: 1.5rem;
+body.modal-open > :not(.modal) {
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  filter: blur(3px);
+}
 
 // font size
 $font-size-root: 10px; //browser root default font-size
@@ -40,6 +47,10 @@ $input-bg: $white;
 $input-placeholder-color: #b9bdc2;
 $input-focus-box-shadow: none;
 
+body {
+  --bs-btn-active-border-color: transparent;
+}
+
 // input number arrows removed
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -49,7 +60,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -78,7 +89,7 @@ $position-values: (
   0: 0,
   2: 2%,
   50: 50%,
-  100: 100%
+  100: 100%,
 );
 
 // custom scrollbar css

@@ -84,7 +84,7 @@ const OrderEditModal = ({ item, show, setShow }) => {
 											id="price"
 											name="price"
 											type="number"
-											min={1}
+											min={0}
 											step={0.01}
 											placeholder="Enter your price"
 											value={price}
@@ -108,7 +108,7 @@ const OrderEditModal = ({ item, show, setShow }) => {
 												id="quantity"
 												name="quantity"
 												type="number"
-												min={1}
+												min={0}
 												placeholder="Enter your quantity"
 												value={quantity}
 												onChange={(event) => setQuantity(event.target.value)}
